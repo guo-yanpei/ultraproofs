@@ -5,7 +5,7 @@ use std::marker::PhantomData;
 
 use crate::poly::MlPoly;
 
-const LOG_CHUNK_NUM: usize = 4;
+pub const LOG_CHUNK_NUM: usize = 4;
 pub struct Mkzg<E: Pairing>(PhantomData<E>);
 #[derive(Debug, Clone)]
 pub struct MkzgCommit<E: Pairing>([E::G1; 1 << LOG_CHUNK_NUM]);
