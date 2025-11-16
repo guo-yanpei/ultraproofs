@@ -270,8 +270,12 @@ impl<F: FftField> VeriRsVerifier<F> {
                 .take(replica.len().ilog2() as usize)
                 .collect::<Vec<_>>(),
         );
-        
-        assert_eq!(x, poly.eval_as_coeff(&eval_point));
+        let mut multiplier = F::one();
+        for i in eval_point.iter_mut() {
+            multiplier *= F::one() + *i;
+            *i *= (F::one() + *i).inverse().unwrap();
+        }
+        assert_eq!(x, poly.eval(&eval_point) * multiplier);
         true
     }
 }

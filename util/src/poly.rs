@@ -18,20 +18,6 @@ impl<F: Field> MlPoly<F> {
         scratch[0]
     }
 
-    pub fn eval_as_coeff(mut self, point: &[F]) -> F {
-        let mut scratch = self.0;
-        let mut cur_len = scratch.len() >> 1;
-        assert_eq!(1 << point.len(), scratch.len());
-        for r in point.iter() {
-            for i in 0..cur_len {
-                scratch[i] = scratch[i * 2] + scratch[i * 2 + 1] * (*r);
-            }
-            cur_len >>= 1;
-        }
-        scratch[0]
-    }
-
-
     pub fn split(self, n: usize) -> Vec<MlPoly<F>> {
         assert_eq!(n & (n - 1), 0);
         let mut polies = (0..n).map(|_| vec![]).collect::<Vec<_>>();
