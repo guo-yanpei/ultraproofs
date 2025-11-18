@@ -40,6 +40,25 @@ impl<F: Field> MlPoly<F> {
         }
         self.0.truncate(cur_len);
     }
+
+    pub fn new_eq(point: &Vec<F>) -> Self {
+        let mut evals = vec![F::one()];
+        for &i in point.iter().rev() {
+            evals = evals
+                .iter()
+                .flat_map(|&x| [(F::one() - i) * x, i * x])
+                .collect()
+        }
+        MlPoly(evals)
+    }
+
+    pub fn eval_eq(point1: &Vec<F>, point2: &Vec<F>) -> F {
+        let mut res = F::one();
+        for (&i, &j) in point1.iter().zip(point2.iter()) {
+            res *= i * j + (F::one() - i) * (F::one() - j);
+        }
+        res
+    }
 }
 
 #[derive(Debug, Clone)]
@@ -120,5 +139,32 @@ impl<F: FftField> UniPolyEvals<F> {
             root_inv *= root_inv;
         }
         evals[0] * inv
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use ark_bn254::Fr;
+    use ark_ff::{AdditiveGroup, UniformRand};
+    use rand::thread_rng;
+
+    use crate::poly::MlPoly;
+
+    #[test]
+    fn it_works() {
+        let nv = 10;
+        let mut rng = thread_rng();
+        let poly = MlPoly((0..(1 << nv)).map(|_| Fr::rand(&mut rng)).collect());
+        let point = (0..nv).map(|_| Fr::rand(&mut rng)).collect::<Vec<_>>();
+        let v = poly.clone().eval(&point);
+        let eq_poly = MlPoly::new_eq(&point);
+        let v2 = poly
+            .0
+            .iter()
+            .zip(eq_poly.0.iter())
+            .fold(Fr::ZERO, |acc, (&i, &j)| acc + i * j);
+        assert_eq!(v, v2);
+        let point2 = (0..nv).map(|_| Fr::rand(&mut rng)).collect::<Vec<_>>();
+        assert_eq!(eq_poly.eval(&point2), MlPoly::eval_eq(&point, &point2));
     }
 }

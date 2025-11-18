@@ -1,5 +1,3 @@
-use std::marker::PhantomData;
-
 use ark_ff::Field;
 use ark_serialize::CanonicalSerialize;
 use rs_merkle::{Hasher, MerkleProof, MerkleTree};
