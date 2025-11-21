@@ -34,5 +34,8 @@ fn bench_kzg<E: Pairing>(pp: &MkzgProveParams<E>, vp: &MkzgVerParams<E>, nv: usi
     let start = Instant::now();
     assert!(Mkzg::verify(&vp, point, &commit, value, proof));
     let verifier_time = start.elapsed().as_millis();
-    println!("nv = {}, prover time = {}, verifier_time = {}", nv, prover_time, verifier_time);
+    println!(
+        "nv = {}, prover time = {}, verifier_time = {}",
+        nv, prover_time, verifier_time
+    );
 }

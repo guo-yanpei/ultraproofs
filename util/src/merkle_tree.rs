@@ -24,22 +24,24 @@ pub struct Serialize;
 impl Serialize {
     pub fn serialize_fields<F: Field>(v: &[F]) -> Vec<u8> {
         let mut bytes = vec![];
-        v.iter().for_each(|x| {
-            <F as CanonicalSerialize>::serialize_compressed(&x, &mut bytes).unwrap()
-        });
+        v.iter()
+            .for_each(|x| <F as CanonicalSerialize>::serialize_compressed(&x, &mut bytes).unwrap());
         bytes
     }
 }
 
 #[derive(Debug, Clone)]
-pub struct MerkleTreeVerifier{
+pub struct MerkleTreeVerifier {
     pub merkle_root: <Blake32 as Hasher>::Hash,
     pub leave_number: usize,
 }
 
 impl MerkleTreeProver {
     pub fn new(leaf_values: &Vec<Vec<u8>>) -> Self {
-        let leaves = leaf_values.iter().map(|x| Blake32::hash(x)).collect::<Vec<_>>();
+        let leaves = leaf_values
+            .iter()
+            .map(|x| Blake32::hash(x))
+            .collect::<Vec<_>>();
         let merkle_tree = MerkleTree::<Blake32>::from_leaves(&leaves);
         Self {
             merkle_tree,
