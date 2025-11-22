@@ -1,8 +1,8 @@
 use std::{iter, mem::size_of};
 
-use ark_ff::{FftField, Field};
+use ark_ff::FftField;
 use util::{
-    merkle_tree::{MerkleRoot, MerkleTreeProver},
+    merkle_tree::{MerkleTreeProver, MerkleTreeVerifier},
     poly::{MlPoly, UniPolyEvals, UniVarPoly},
     radix2group::Radix2Group,
 };
@@ -88,9 +88,6 @@ impl<F: FftField> VeriRsProver<F> {
         for i in 1..(log_row_length / step) {
             evaluate_groups.push(Radix2Group::new(1 << (log_symbol_number - i * step)));
         }
-        //  iter::successors(Some(fft_group.clone()), |x| Some(x.exp(1 << step)))
-        //     .take(log_row_length / step)
-        //     .collect::<Vec<_>>();
         let root_inv = Radix2Group::new(1 << step).element_inv_at(1);
         VeriRsProver {
             fft_group,
@@ -229,7 +226,7 @@ impl<F: FftField> VeriRsVerifier<F> {
             merkle_paths,
             final_poly,
         } = symbol;
-        let root = MerkleRoot::get_root(
+        let root = MerkleTreeVerifier::get_root(
             first_paths,
             self.index,
             replica.serialize(),
@@ -248,7 +245,7 @@ impl<F: FftField> VeriRsVerifier<F> {
             )
         {
             assert_eq!(x, poly.n_th_eval(inner));
-            let root = MerkleRoot::get_root(paths, outer, poly.serialize(), leave_number);
+            let root = MerkleTreeVerifier::get_root(paths, outer, poly.serialize(), leave_number);
             let challenge = F::from_random_bytes(&root[..30]).unwrap();
             x = poly.eval(challenge, self.omega_inv, self.inv_2);
             eval_point.append(

@@ -18,7 +18,7 @@ impl<F: Field> MlPoly<F> {
         scratch[0]
     }
 
-    pub fn split(self, n: usize) -> Vec<MlPoly<F>> {
+    pub fn split(&self, n: usize) -> Vec<MlPoly<F>> {
         assert_eq!(n & (n - 1), 0);
         let mut polies = (0..n).map(|_| vec![]).collect::<Vec<_>>();
         let len = self.0.len();

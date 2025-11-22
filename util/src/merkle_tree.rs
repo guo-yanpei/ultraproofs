@@ -85,10 +85,7 @@ impl MerkleTreeVerifier {
             self.leave_number,
         )
     }
-}
 
-pub struct MerkleRoot;
-impl MerkleRoot {
     pub fn get_root(
         proof_bytes: Vec<u8>,
         index: usize,

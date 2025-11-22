@@ -162,7 +162,6 @@ impl<E: Pairing> Mkzg<E> {
             let challenge = oracle.next_field();
             r_point.push(challenge);
             let m = m >> 1;
-            // assert_eq!(m * 2, poly.len());
             for j in 0..m {
                 poly_evals[j] =
                     poly_evals[j * 2] + (poly_evals[j * 2 + 1] - poly_evals[j * 2]) * challenge;

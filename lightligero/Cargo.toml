@@ -10,3 +10,4 @@ ark-bn254 = "0.5"
 rand = "0.8.5"
 ark-serialize = "0.5"
 rs_merkle = "1.5"
+util = { path = "../util" }
