@@ -28,7 +28,7 @@ fn bench_kzg<E: Pairing>(pp: &MkzgProveParams<E>, vp: &MkzgVerParams<E>, nv: usi
         .map(|_| <E::ScalarField as UniformRand>::rand(&mut rng))
         .collect::<Vec<_>>();
     let start = Instant::now();
-    let commit = Mkzg::commit(&pp, poly.clone());
+    let commit = Mkzg::commit(&pp, &poly);
     let (proof, value) = Mkzg::open(&pp, poly.clone(), point.clone());
     let prover_time = start.elapsed().as_millis();
     let start = Instant::now();

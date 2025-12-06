@@ -68,7 +68,7 @@ impl<E: Pairing> Mkzg<E> {
         )
     }
 
-    pub fn commit(srs: &MkzgProveParams<E>, poly: MlPoly<E::ScalarField>) -> MkzgCommit<E> {
+    pub fn commit(srs: &MkzgProveParams<E>, poly: &MlPoly<E::ScalarField>) -> MkzgCommit<E> {
         if srs.0.len() != poly.0.len() >> LOG_CHUNK_NUM {
             panic!("{} {}", file!(), line!());
         }
@@ -277,7 +277,7 @@ mod tests {
         let (pp, vp) = Mkzg::<Bn254>::gen_srs(10, &mut rng);
         let pp = pp.trim(log_len - LOG_CHUNK_NUM);
         let vp = vp.trim(log_len - LOG_CHUNK_NUM);
-        let commit = Mkzg::commit(&pp, poly.clone());
+        let commit = Mkzg::commit(&pp, &poly);
         let point = (0..10)
             .map(|_| {
                 (0..log_len)
